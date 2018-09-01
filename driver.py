@@ -89,11 +89,27 @@ def extract_props(src=config.raw_hanja, dest=Path(config.props_hanja)):
                 
             print(repr(props), file=ofile)
 
+            
+def extract_simple_pair(src=config.props_hanja):
+    from ast import literal_eval
+    from itertools import product
+    
+    with open(src) as ifile:
+        for line in ifile:
+            props = literal_eval(line)
+            char = props.get('글자', [])
+            meaning = props.get('훈', [])
+            sound = props.get('음', [])
+            for c, m, s in product(char, meaning, sound):
+                item = (c, (m + ' ' + s))
+                print('    ' + repr(item) + ',')
+                        
 
 def run():
     fetch()
     extract_raw_hanja()
     extract_props()
+    extract_simple_pair()
 
     
 if __name__ == '__main__':
